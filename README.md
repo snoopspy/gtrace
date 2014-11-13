@@ -1,4 +1,4 @@
-gilgil trace version 0.1
+gtrace version 0.1
 ========================
 
 
