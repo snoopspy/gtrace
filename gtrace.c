@@ -82,7 +82,7 @@ int gtrace_close()
 	if (_gtrace.sock != -1)
 	{
 		close(_gtrace.sock);
-		shutdown(_gtrace.sock, 0x02); // SD_BOTH
+		shutdown(_gtrace.sock, 0x02); /* SD_BOTH */
 		_gtrace.sock = INVALID_SOCK;
 	}
 

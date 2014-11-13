@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //
-// gtrace version 0.9
+// gtrace version 0.1
 //
 // http://www.gilgil.net
 //
@@ -24,3 +24,4 @@ int gtrace_open(const char *ip, int port);
 #endif
 
 #endif // __GTRACE_H__
+
