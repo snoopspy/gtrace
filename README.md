@@ -6,7 +6,7 @@ gilgil trace version 0.1
 
 - include gtrace.h
 - call gtrace function.
-- if you would like to change gtrace config, call gtrace_init function.
+- if you would like to change gtrace config, call gtrace_open function.
 
 
 *example1*
