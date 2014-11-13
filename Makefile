@@ -1,4 +1,4 @@
-LDFLAGS +=-lpthread
+LDFLAGS+=-lpthread
 
 all: example1 example2
 
