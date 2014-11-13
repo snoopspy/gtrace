@@ -1,10 +1,13 @@
-LDFLAGS+=-lpthread
+CFLAGS+=-g -O0
+CPPFLAGS+=-g -O0
 
 all: example1 example2
 
 example1: example1.o gtrace.o
+	cc -o example1 example1.o gtrace.o -lpthread
 
 example2: example2.o gtrace.o
+	gcc -o example2 example2.o gtrace.o -lpthread
 
 clean:
 	rm -rf *.o
