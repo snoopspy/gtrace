@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 #include <sys/socket.h>
 
 typedef struct
@@ -8,18 +9,12 @@ typedef struct
 	struct sockaddr addr;
 
 	char ip[256];
-	int  port;
+	uint16_t port;
 } gtrace_t;
 
-gtrace_t _gtrace =
-{
-	false, // active
-	-1,    // handle
-	0,     // addr
-	0,     // ip
-	0      // port
-};
+gtrace_t _gtrace;
 
+static bool _initialized = false;
 static bool _init();
 static bool _open();
 static bool _close();
@@ -38,6 +33,7 @@ static bool _close()
 {
 
 }
+
 static void _write(char* buf, int len)
 {
 
