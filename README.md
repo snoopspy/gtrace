@@ -2,11 +2,12 @@ gilgil trace version 0.1
 ========================
 
 *how to use*
-	- include gtrace.h
-	- call gtrace function.
-	- if you would like to change gtrace config, call gtrace_init function.
+- include gtrace.h
+- call gtrace function.
+- if you would like to change gtrace config, call gtrace_init function.
 
 *example*
+
 	void basic_test()
 	{
 		gtrace("hello world");
