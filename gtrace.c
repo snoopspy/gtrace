@@ -38,9 +38,25 @@ static gtrace_t _gtrace =
 	.active = false,
 };
 
-static bool _open();
 static bool _close();
+static bool _open();
 static void _write(char* buf, int len);
+
+static bool _close()
+{
+	if (!_gtrace.active)
+		return false;
+
+	if (_gtrace.sock != -1)
+	{
+		close(_gtrace.sock);
+		shutdown(_gtrace.sock, 0x02); // SD_BOTH
+		_gtrace.sock = INVALID_SOCK;
+	}
+
+	_gtrace.active = false;
+	return true;
+}
 
 static bool _open()
 {
@@ -57,22 +73,6 @@ static bool _open()
 	memset(&_gtrace.addr.sin_zero, sizeof(_gtrace.addr.sin_zero), 0);
 
 	_gtrace.active = true;
-	return true;
-}
-
-static bool _close()
-{
-	if (!_gtrace.active)
-		return false;
-
-	if (_gtrace.sock != -1)
-	{
-		close(_gtrace.sock);
-		shutdown(_gtrace.sock, 0x02); // SD_BOTH
-		_gtrace.sock = INVALID_SOCK;
-	}
-
-	_gtrace.active = false;
 	return true;
 }
 
@@ -105,20 +105,21 @@ void gtrace(const char* fmt, ...)
 	res = snprintf(p, remn, "%08lX ", pthread_self());
 	if (res < 0)
 		return;
-	p += res;
-	len += res;
-	remn -= res;
+	p += res; len += res; remn -= res;
 #endif // SHOW_THREAD_ID
 
 	va_start(args, fmt);
 	res = vsnprintf(p, remn, fmt, args);
 	va_end(args);
 	if (res < 0) return;
-	p += res;
-	len += res;
-	remn -= res;
+	p += res; len += res; // remn -= res;
 
 	_write(buf, len);
+}
+
+void gtrace_fini()
+{
+	_close();
 }
 
 void gtrace_init(const char *ip, int port)
