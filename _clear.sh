@@ -80,7 +80,7 @@ rm_file *.o
 # --------------------------------------------------------
 # qt
 # --------------------------------------------------------
-# rm_file Makefile
+rm_file Makefile
 rm_file Makefile.*
 rm_file ui_*.h
 rm_file qrc_*.cpp
