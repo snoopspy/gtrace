@@ -1,19 +1,28 @@
 #include "gtrace.h"
 
-void test1()
+void basic_test()
 {
 	gtrace("hello world");
 }
 
-void test2()
+void init_test()
 {
 	gtrace_init("127.0.0.1", 8908);
 	gtrace("hello world");
 }
 
+void init_fini_test()
+{
+	gtrace_init("127.0.0.1", 8908);
+	gtrace("hello world");
+	gtrace_fini();
+}
+
 int main()
 {
-	test1();
-	test2();
+	basic_test();
+	init_test();
+	init_fini_test();
 	return 0;
 }
+
