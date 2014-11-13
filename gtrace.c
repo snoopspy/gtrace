@@ -15,6 +15,8 @@
 #include <pthread.h>
 #endif // SHOW_THREAD_ID
 
+#include "gtrace.h"
+
 #define BUF_SIZE BUFSIZ
 #define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT 8908
@@ -89,8 +91,11 @@ void gtrace(const char* fmt, ...)
 	char buf[BUF_SIZE];
 	va_list args;
 
-	if (!_gtrace.active)
-		return;
+	if (!_gtrace.active) {
+		gtrace_init(DEFAULT_IP, DEFAULT_PORT);
+		if (!_gtrace.active)
+			return;
+	}
 
 	p = buf;
 	len = 0;
