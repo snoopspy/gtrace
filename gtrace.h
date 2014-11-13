@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 void gtrace(const char* fmt, ...);
-void gtrace_option(const char *ip, int port);
+void gtrace_init(const char *ip, int port);
 
 #ifdef __cplusplus
 }
