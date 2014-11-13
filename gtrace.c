@@ -3,9 +3,6 @@
 #include <arpa/inet.h>
 #include <limits.h>
 #include <netinet/in.h>
-#ifdef SHOW_THREAD_ID
-#include <pthread.h>
-#endif // SHOW_THREAD_ID
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -14,6 +11,10 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#ifdef SHOW_THREAD_ID
+#include <pthread.h>
+#endif // SHOW_THREAD_ID
+
 #define BUF_SIZE BUFSIZ
 #define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT 8908
@@ -21,14 +22,10 @@
 
 typedef struct
 {
-	char ip[PATH_MAX];
-	uint16_t port;
-
-} gtrace_conf_t;
-
-typedef struct
-{
-	gtrace_conf_t conf;
+	struct {
+		char ip[PATH_MAX];
+		uint16_t port;
+	} conf;
 	bool active;
 	int sock;
 	struct sockaddr_in addr;
@@ -54,7 +51,7 @@ static bool _open()
 
 	_gtrace.addr.sin_family = AF_INET;
 	_gtrace.addr.sin_port = htons(_gtrace.conf.port);
-	_gtrace.addr.sin_addr.s_addr = ntohl(inet_addr(_gtrace.conf.ip));
+	_gtrace.addr.sin_addr.s_addr = inet_addr(_gtrace.conf.ip);
 	memset(&_gtrace.addr.sin_zero, sizeof(_gtrace.addr.sin_zero), 0);
 
 	_gtrace.active = true;
@@ -79,7 +76,8 @@ static bool _close()
 
 static void _write(char* buf, int len)
 {
-	sendto(_gtrace.sock, buf, len, 0, (struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
+	sendto(_gtrace.sock, buf, len, 0,
+		(struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
 }
 
 void gtrace(const char* fmt, ...)
