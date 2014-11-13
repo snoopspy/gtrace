@@ -1,9 +1,11 @@
-all: test
+all: example1 example2
 
-test: main.o gtrace.o
-	g++ -o test main.o gtrace.o
+example1: example1.o gtrace.o
+
+example2: example2.o gtrace.o
 
 clean:
 	rm -rf *.o
-	rm -rf test
+	rm -rf example1
+	rm -rf example2
 

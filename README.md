@@ -9,23 +9,22 @@ gilgil trace version 0.1
 - if you would like to change gtrace config, call gtrace_init function.
 
 
-*example*
+*example1*
 
-	void basic_test()
+	int main()
 	{
 		gtrace("hello world");
+		return 0;
 	}
 
-	void init_test()
-	{
-		gtrace_init("127.0.0.1", 8908);
-		gtrace("hello world");
-	}
 
-	void init_fini_test()
+*example2*
+
+	int main()
 	{
-		gtrace_init("127.0.0.1", 8908);
+		gtrace_open("127.0.0.1", 8908);
 		gtrace("hello world");
-		gtrace_fini();
+		gtrace_close();
+		return 0;
 	}
 

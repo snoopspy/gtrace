@@ -16,8 +16,8 @@ extern "C" {
 #endif
 
 void gtrace(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-void gtrace_fini();
-void gtrace_init(const char *ip, int port);
+int gtrace_close();
+int gtrace_open(const char *ip, int port);
 
 #ifdef __cplusplus
 }
