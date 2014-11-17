@@ -74,10 +74,10 @@ void gtrace(const char* fmt, ...)
 		(struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
 }
 
-int gtrace_close()
+bool gtrace_close()
 {
 	if (!_gtrace.active)
-		return -1;
+		return false;
 
 	if (_gtrace.sock != -1)
 	{
@@ -87,13 +87,13 @@ int gtrace_close()
 	}
 
 	_gtrace.active = false;
-	return 0;
+	return true;
 }
 
-int gtrace_open(const char *ip, int port)
+bool gtrace_open(const char *ip, int port)
 {
 	if (_gtrace.active)
-		return -1;
+		return false;
 
 	strncpy(_gtrace.conf.ip, ip, PATH_MAX);
 	_gtrace.conf.port = port;
@@ -108,7 +108,7 @@ int gtrace_open(const char *ip, int port)
 	memset(&_gtrace.addr.sin_zero, sizeof(_gtrace.addr.sin_zero), 0);
 
 	_gtrace.active = true;
-	return 0;
+	return true;
 }
 
 // ----------------------------------------------------------------------------

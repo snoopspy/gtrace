@@ -11,6 +11,8 @@
 #ifndef __GTRACE_H__
 #define __GTRACE_H__
 
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -19,8 +21,8 @@ extern "C" {
 // api
 // ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-int gtrace_close();
-int gtrace_open(const char *ip, int port);
+bool gtrace_close();
+bool gtrace_open(const char *ip, int port);
 
 // ----------------------------------------------------------------------------
 // macro
