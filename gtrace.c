@@ -74,7 +74,7 @@ void gtrace(const char* fmt, ...)
 		(struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
 }
 
-bool gtrace_close()
+bool gtrace_close(void)
 {
 	if (!_gtrace.active)
 		return false;
