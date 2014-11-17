@@ -1,15 +1,12 @@
 #define SHOW_THREAD_ID
 
-#include <arpa/inet.h>
 #include <limits.h>
-#include <netinet/in.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 
 #ifdef SHOW_THREAD_ID
 #include <pthread.h>
