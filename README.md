@@ -4,7 +4,7 @@ gtrace version 0.1
 
 *how to use*
 
-- include gtrace.h
+- include gtrace.h and add gtrace.c in your project.
 - call gtrace(function) or GTRACE(macro).
 - if you would like to change gtrace config, call gtrace_open function.
 
