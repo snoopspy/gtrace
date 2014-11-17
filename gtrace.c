@@ -38,6 +38,9 @@ static gtrace_t _gtrace =
 	.active = false,
 };
 
+// ----------------------------------------------------------------------------
+// api
+// ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...)
 {
 	char* p;
@@ -111,3 +114,29 @@ int gtrace_open(const char *ip, int port)
 	return 0;
 }
 
+// ----------------------------------------------------------------------------
+// macro
+// ----------------------------------------------------------------------------
+const char* gtrace_file_name(const char* file_name)
+{
+#ifdef WIN32
+  const char* p1 = strrchr(file_name, '\\');
+  const char* p2 = strrchr(file_name, '/');
+  const char* p  = p1 > p2 ? p1 : p2;
+#endif // WIN32
+#ifdef linux
+  const char* p = strrchr(file_name, '/');
+#endif // linux
+  return (p == NULL ? file_name : p + 1);
+}
+
+const char* gtrace_func_name(const char* func_name)
+{
+#ifdef WIN32
+  const char* p = strrchr(func_name, ':');
+  return (p == NULL ? func_name : p + 1);
+#endif // WIN32
+#ifdef linux
+  return func_name;
+#endif // linux
+}

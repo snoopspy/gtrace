@@ -15,13 +15,26 @@
 extern "C" {
 #endif
 
+// ----------------------------------------------------------------------------
+// api
+// ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
 int gtrace_close();
 int gtrace_open(const char *ip, int port);
+
+// ----------------------------------------------------------------------------
+// macro
+// ----------------------------------------------------------------------------
+const char* gtrace_file_name(const char* file_name);
+const char* gtrace_func_name(const char* func_name);
+
+#define GTRACE(fmt, ...) \
+do { \
+	gtrace("[%s:%d] %s " fmt, gtrace_file_name(__FILE__), __LINE__, gtrace_func_name(__FUNCTION__), ##__VA_ARGS__); \
+} while(0)
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif // __GTRACE_H__
-
