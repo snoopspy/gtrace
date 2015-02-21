@@ -2,7 +2,7 @@ gtrace version 0.1
 ========================
 
 
-*how to use*
+*How to use*
 
 - Include gtrace.h and add gtrace.c in your project.
 - Call gtrace(function) or GTRACE(macro).
