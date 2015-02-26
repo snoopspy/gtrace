@@ -16,6 +16,8 @@ SOURCES += exam.cpp \
 HEADERS += \
 	gtrace.h
 
+win32:LIBS += -lws2_32
+
 OTHER_FILES += \
 	makefile \
 	readme.md

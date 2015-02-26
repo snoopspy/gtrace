@@ -3,10 +3,16 @@
 #include <limits.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef WIN32
+#include <winsock2.h>
+#endif // WIN32
+#ifdef linux
 #include <arpa/inet.h>
+#endif // linux
 
 #ifdef SHOW_THREAD_ID
 #include <pthread.h>
@@ -25,7 +31,7 @@ typedef struct
   struct {
     char ip[PATH_MAX];
     uint16_t port;
-    bool stdout;
+    bool write_stdout;
   } conf;
   bool active;
   int sock;
@@ -34,7 +40,7 @@ typedef struct
 
 static gtrace_t _gtrace =
 {
-  .active = false,
+  .active = false
 };
 
 // ----------------------------------------------------------------------------
@@ -74,7 +80,7 @@ void gtrace(const char* fmt, ...)
 
   sendto(_gtrace.sock, buf, len, 0,
     (struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
-  if (_gtrace.conf.stdout)
+  if (_gtrace.conf.write_stdout)
   {
     printf("%s\n", buf);
     fflush(stdout);
@@ -97,14 +103,24 @@ bool gtrace_close(void)
   return true;
 }
 
-bool gtrace_open(const char *ip, int port, bool stdout)
+bool gtrace_open(const char *ip, int port, bool write_stdout)
 {
   if (_gtrace.active)
     return false;
 
+#ifdef WIN32
+  static bool first = true;
+  if (first)
+  {
+    WSADATA wsaData;
+    WSAStartup(0x0202, &wsaData);
+    first = false;
+  }
+#endif // WIN32
+
   strncpy(_gtrace.conf.ip, ip, PATH_MAX);
   _gtrace.conf.port = port;
-  _gtrace.conf.stdout = stdout;
+  _gtrace.conf.write_stdout = write_stdout;
 
   _gtrace.sock = socket(AF_INET, SOCK_DGRAM, 0);
   if (_gtrace.sock == INVALID_SOCK)
