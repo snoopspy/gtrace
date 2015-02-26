@@ -5,4 +5,5 @@ gtrace_test: exam.o gtrace.o
 
 clean:
 	rm -rf *.o
+	rm -rf *.pro.user
 	rm -rf gtrace_test
