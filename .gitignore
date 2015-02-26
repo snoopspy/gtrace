@@ -1,3 +1,4 @@
 *.o
 *.pro.user
 gtrace_test
+gtrace_test.exe
