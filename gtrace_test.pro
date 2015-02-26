@@ -4,21 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       -= core
-QT       -= gui
-
+QT -= core gui
 TARGET = gtrace_test
-CONFIG   += console
-CONFIG   -= app_bundle
-
+CONFIG += console
+CONFIG -= app_bundle
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    gtrace.c
+SOURCES += exam.cpp \
+	gtrace.c
 
 HEADERS += \
-    gtrace.h
+	gtrace.h
 
 OTHER_FILES += \
-    README.md \
-    Makefile
+	makefile \
+	readme.md

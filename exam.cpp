@@ -9,7 +9,7 @@ void gtrace_conf_test()
 {
   gtrace_open("127.0.0.1", 8908, true);
   gtrace("hello world 2");
-	gtrace_close();
+  gtrace_close();
 }
 
 void GTRACE_test()
@@ -21,14 +21,14 @@ void GTRACE_conf_test()
 {
   gtrace_open("127.0.0.1", 8908, true);
   GTRACE("hello world 4");
-	gtrace_close();
+  gtrace_close();
 }
 
 int main()
 {
-	gtrace_test();
-	gtrace_conf_test();
-	GTRACE_test();
-	GTRACE_conf_test();
-	return 0;
+  gtrace_test();
+  gtrace_conf_test();
+  GTRACE_test();
+  GTRACE_conf_test();
+  return 0;
 }
