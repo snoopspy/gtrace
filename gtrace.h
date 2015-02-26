@@ -22,7 +22,7 @@ extern "C" {
 // ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
 bool gtrace_close(void);
-bool gtrace_open(const char *ip, int port);
+bool gtrace_open(const char *ip, int port, bool stdout);
 
 // ----------------------------------------------------------------------------
 // macro

@@ -17,6 +17,7 @@
 #define BUF_SIZE BUFSIZ
 #define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT 8908
+#define DEFAULT_STDOUT true
 #define INVALID_SOCK -1
 
 typedef struct
@@ -24,6 +25,7 @@ typedef struct
 	struct {
 		char ip[PATH_MAX];
 		uint16_t port;
+    bool stdout;
 	} conf;
 	bool active;
 	int sock;
@@ -48,7 +50,7 @@ void gtrace(const char* fmt, ...)
 	va_list args;
 
 	if (!_gtrace.active) {
-		gtrace_open(DEFAULT_IP, DEFAULT_PORT);
+    gtrace_open(DEFAULT_IP, DEFAULT_PORT, DEFAULT_STDOUT);
 		if (!_gtrace.active)
 			return;
 	}
@@ -72,6 +74,11 @@ void gtrace(const char* fmt, ...)
 
 	sendto(_gtrace.sock, buf, len, 0,
 		(struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
+  if (_gtrace.conf.stdout)
+  {
+    printf("%s\n", buf);
+    fflush(stdout);
+  }
 }
 
 bool gtrace_close(void)
@@ -90,13 +97,14 @@ bool gtrace_close(void)
 	return true;
 }
 
-bool gtrace_open(const char *ip, int port)
+bool gtrace_open(const char *ip, int port, bool stdout)
 {
 	if (_gtrace.active)
 		return false;
 
 	strncpy(_gtrace.conf.ip, ip, PATH_MAX);
 	_gtrace.conf.port = port;
+  _gtrace.conf.stdout = stdout;
 
 	_gtrace.sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (_gtrace.sock == INVALID_SOCK)

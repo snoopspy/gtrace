@@ -1,2 +1,3 @@
-*.user
-
+*.o
+*.pro.user
+gtrace_test

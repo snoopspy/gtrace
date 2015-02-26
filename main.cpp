@@ -2,25 +2,25 @@
 
 void gtrace_test()
 {
-	gtrace("hello world");
+  gtrace("hello world 1");
 }
 
 void gtrace_conf_test()
 {
-	gtrace_open("127.0.0.1", 8908);
-	gtrace("hello world");
+  gtrace_open("127.0.0.1", 8908, true);
+  gtrace("hello world 2");
 	gtrace_close();
 }
 
 void GTRACE_test()
 {
-	GTRACE("hello world");
+  GTRACE("hello world 3");
 }
 
 void GTRACE_conf_test()
 {
-	gtrace_open("127.0.0.1", 8908);
-	GTRACE("hello world");
+  gtrace_open("127.0.0.1", 8908, true);
+  GTRACE("hello world 4");
 	gtrace_close();
 }
 
