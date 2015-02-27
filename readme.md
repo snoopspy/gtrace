@@ -53,3 +53,10 @@ int main()
 7FE81376A740 [exam.cpp:17] GTRACE_test hello world 3
 7FE81376A740 [exam.cpp:23] GTRACE_conf_test hello world 4
 ```
+
+# For mingw
+
+  * You can build example in the following make option.
+```
+make CC=gcc LDFLAGS+=-lws2_32
+```
