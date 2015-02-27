@@ -1,5 +1,5 @@
 SOURCES = gtrace.c exam.c
-OBJECTS = $(SOURCES:.cdd=.o)
+OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = exam
 #LDFLAGS += -lws2_32 // for win32
  
