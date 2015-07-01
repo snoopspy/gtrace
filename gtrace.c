@@ -129,7 +129,7 @@ bool gtrace_open(const char *ip, int port, bool write_stdout)
   _gtrace.addr.sin_family = AF_INET;
   _gtrace.addr.sin_port = htons(_gtrace.conf.port);
   _gtrace.addr.sin_addr.s_addr = inet_addr(_gtrace.conf.ip);
-  memset(&_gtrace.addr.sin_zero, sizeof(_gtrace.addr.sin_zero), 0);
+  memset(&_gtrace.addr.sin_zero, 0, sizeof(_gtrace.addr.sin_zero));
 
   _gtrace.active = true;
   return true;
