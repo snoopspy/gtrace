@@ -3,9 +3,9 @@ gtrace version 0.2
 
 # How to use
 
-	* Include **gtrace.h** and add **gtrace.c** in your project.
-	* Call **gtrace**(function) or **GTRACE**(macro).
-	* If you would like to change option, call **gtrace_open** function.
+* Include **gtrace.h** and add **gtrace.c** in your project.
+* Call **gtrace**(function) or **GTRACE**(macro).
+* If you would like to change option, call **gtrace_open** function.
 
 # Example
 
@@ -37,7 +37,6 @@ int main() {
 	gtrace_conf_test();
 	GTRACE_test();
 	GTRACE_conf_test();
-	return 0;
 }
 ```
 
@@ -51,7 +50,7 @@ int main() {
 
 # For mingw
 
-	* You can build example in the following make option.
+* You can build example in the following make option.
 ```
 make CC=gcc LDFLAGS+=-lws2_32
 ```
