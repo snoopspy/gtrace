@@ -1,6 +1,7 @@
 SOURCES = gtrace.c exam.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = exam
+CFLAGS += -O2 -Wall
 
 all: $(SOURCES) $(EXECUTABLE)
 
