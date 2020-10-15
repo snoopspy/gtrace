@@ -109,7 +109,7 @@ bool gtrace_open(const char *ip, int port, bool write_stdout) {
 	}
 #endif // WIN32
 
-	strncpy(_gtrace.conf.ip, ip, PATH_MAX);
+	strncpy(_gtrace.conf.ip, ip, PATH_MAX - 1);
 	_gtrace.conf.port = port;
 	_gtrace.conf.write_stdout = write_stdout;
 
