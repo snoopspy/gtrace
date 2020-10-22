@@ -10,7 +10,7 @@ gtrace version 0.4
 
 # Options
 ```
-bool gtrace_open(const char* ip, int port, bool so /*stdout*/ , const char* file);
+bool gtrace_open(const char* ip, int port, bool so /*stdout*/, const char* file);
 ```
 
 |options|description|
