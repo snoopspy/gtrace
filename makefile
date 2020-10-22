@@ -1,14 +1,9 @@
-SOURCES = gtrace.c exam.c
-OBJECTS = $(SOURCES:.c=.o)
-EXECUTABLE = exam
-CFLAGS += -O2 -Wall
+CFLAGS+=-g
 
-all: $(SOURCES) $(EXECUTABLE)
+all: exam
 
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) -o $@ $(OBJECTS) $(LDFLAGS)
+exam: gtrace.o exam.o
+	$(LINK.cpp) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 clean:
-	rm -rf *.o
-	rm -f $(EXECUTABLE)
-	rm -f $(EXECUTABLE).exe
+	rm -rf *.o exam exam.exe

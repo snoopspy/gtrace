@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 //
-// gtrace version 0.2
+// gtrace version 0.4
 //
 // http://www.gilgil.net
 //
@@ -21,8 +21,8 @@ extern "C" {
 // api
 // ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-bool gtrace_close(void);
-bool gtrace_open(const char *ip, int port, bool write_stdout);
+bool gtrace_open(const char* ip, int port, bool so /*stdout*/ , const char* file);
+bool gtrace_close();
 
 // ----------------------------------------------------------------------------
 // macro

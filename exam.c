@@ -1,28 +1,30 @@
 #include "gtrace.h"
 
-void gtrace_test() {
-	gtrace("hello world 1");
+void simple_test() {
+	for (int i = 0; i < 5; i++)
+		GTRACE("hello world(simple) %d\n", i);
 }
 
-void gtrace_conf_test() {
-	gtrace_open("127.0.0.1", 8908, true);
-	gtrace("hello world 2");
+void udp_test() {
 	gtrace_close();
+	gtrace_open("127.0.0.1", 8908, false, 0);
+	GTRACE("hello world(udp)");
 }
-
-void GTRACE_test() {
-	GTRACE("hello world 3");
-}
-
-void GTRACE_conf_test() {
-	gtrace_open("127.0.0.1", 8908, true);
-	GTRACE("hello world 4");
+void stdout_test() {
 	gtrace_close();
+	gtrace_open(0, 0, true, 0);
+	GTRACE("hello world(stdout)\n");
+}
+
+void file_test() {
+	gtrace_close();
+	gtrace_open(0, 0, false, "test.log");
+	GTRACE("hello world(file)\n");
 }
 
 int main() {
-	gtrace_test();
-	gtrace_conf_test();
-	GTRACE_test();
-	GTRACE_conf_test();
+	simple_test();
+	udp_test();
+	stdout_test();
+	file_test();
 }

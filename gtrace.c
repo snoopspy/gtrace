@@ -1,18 +1,15 @@
 #define SHOW_THREAD_ID
 
-#include <limits.h>
 #include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #ifdef WIN32
 #include <winsock2.h>
 #endif // WIN32
-#ifdef linux
+#ifdef __linux__
 #include <arpa/inet.h>
-#endif // linux
+#endif // __linux__
 
 #ifdef SHOW_THREAD_ID
 #include <pthread.h>
@@ -20,47 +17,55 @@
 
 #include "gtrace.h"
 
-#define BUF_SIZE BUFSIZ
-#define DEFAULT_IP "127.0.0.1"
-#define DEFAULT_PORT 8908
-#define DEFAULT_STDOUT true
-#define INVALID_SOCK -1
-
 typedef struct {
 	struct {
-		char ip[PATH_MAX];
-		uint16_t port;
-		bool write_stdout;
-	} conf;
-	bool active;
-	int sock;
-	struct sockaddr_in addr;
+		bool active;
+	} status;
+
+	struct {
+		bool enabled;
+		int sock;
+		struct sockaddr_in addr;
+	} udp;
+
+	//
+	// stdout
+	//
+	struct {
+		bool enabled;
+	} so;
+
+	//
+	// file
+	//
+	struct {
+		bool enabled;
+		FILE* fp;
+	} file;
 } gtrace_t;
 
-static gtrace_t _gtrace = {
-	.active = false
+gtrace_t _gtrace = {
+	.status.active = false
 };
 
 // ----------------------------------------------------------------------------
 // api
 // ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) {
-	char* p;
-	int len;
-	int remn;
-	int res;
-	char buf[BUF_SIZE];
-	va_list args;
-
-	if (!_gtrace.active) {
-		gtrace_open(DEFAULT_IP, DEFAULT_PORT, DEFAULT_STDOUT);
-		if (!_gtrace.active)
-			return;
+	static bool first = true;
+	if (first && !_gtrace.status.active) {
+		first = false;
+		gtrace_open("127.0.0.1", 8908, true, NULL);
 	}
 
-	p = buf;
-	len = 0;
-	remn = BUF_SIZE;
+	if (!_gtrace.status.active)
+		return;
+
+	int res;
+	char buf[BUFSIZ];
+	char* p = buf;
+	int len = 0;
+	int remn = BUFSIZ;
 
 #ifdef SHOW_THREAD_ID
 	res = snprintf(p, remn, "%08lX ", pthread_self());
@@ -69,35 +74,55 @@ void gtrace(const char* fmt, ...) {
 	p += res; len += res; remn -= res;
 #endif // SHOW_THREAD_ID
 
+	va_list args;
 	va_start(args, fmt);
 	res = vsnprintf(p, remn, fmt, args);
 	va_end(args);
 	if (res < 0) return;
 	p += res; len += res; // remn -= res;
 
-	sendto(_gtrace.sock, buf, len, 0, (struct sockaddr*)&_gtrace.addr, sizeof(struct sockaddr_in));
-	if (_gtrace.conf.write_stdout) {
-		printf("%s\n", buf);
+	if (_gtrace.udp.enabled)
+		sendto(_gtrace.udp.sock, buf, len, 0, (struct sockaddr*)&_gtrace.udp.addr, sizeof(struct sockaddr_in));
+
+	if (_gtrace.so.enabled) {
+		printf("%s", buf);
 		fflush(stdout);
+	}
+
+	if (_gtrace.file.enabled) {
+		fprintf(_gtrace.file.fp, "%s", buf);
+		fflush(_gtrace.file.fp);
 	}
 }
 
 bool gtrace_close(void) {
-	if (!_gtrace.active)
+	if (!_gtrace.status.active)
 		return false;
 
-	if (_gtrace.sock != -1) {
-		close(_gtrace.sock);
-		shutdown(_gtrace.sock, 0x02); /* SD_BOTH */
-		_gtrace.sock = INVALID_SOCK;
+	if (_gtrace.udp.enabled) {
+		if (_gtrace.udp.sock != -1) {
+			close(_gtrace.udp.sock);
+			shutdown(_gtrace.udp.sock, 0x02); /* SD_BOTH */
+			_gtrace.udp.sock = -1;
+		}
 	}
 
-	_gtrace.active = false;
+	if (_gtrace.so.enabled) {
+	}
+
+	if (_gtrace.file.enabled) {
+		if (_gtrace.file.fp != NULL) {
+			fclose(_gtrace.file.fp);
+			_gtrace.file.fp = NULL;
+		}
+	}
+
+	_gtrace.status.active = false;
 	return true;
 }
 
-bool gtrace_open(const char *ip, int port, bool write_stdout) {
-	if (_gtrace.active)
+bool gtrace_open(const char* ip, int port, bool so, const char* file) {
+	if (_gtrace.status.active)
 		return false;
 
 #ifdef WIN32
@@ -109,20 +134,45 @@ bool gtrace_open(const char *ip, int port, bool write_stdout) {
 	}
 #endif // WIN32
 
-	strncpy(_gtrace.conf.ip, ip, PATH_MAX - 1);
-	_gtrace.conf.port = port;
-	_gtrace.conf.write_stdout = write_stdout;
+	//
+	// udp
+	//
+	_gtrace.udp.enabled = false;
+	if (ip != NULL && port != 0) {
+		_gtrace.udp.sock = socket(AF_INET, SOCK_DGRAM, 0);
+		if (_gtrace.udp.sock == -1) {
+			fprintf(stderr, "socket return nullptr\n");
+		} else {
+			_gtrace.udp.addr.sin_family = AF_INET;
+			_gtrace.udp.addr.sin_port = htons(port);
+			_gtrace.udp.addr.sin_addr.s_addr = inet_addr(ip);
+			memset(&_gtrace.udp.addr.sin_zero, 0, sizeof(_gtrace.udp.addr.sin_zero));
+			_gtrace.udp.enabled = true;
+		}
+	}
 
-	_gtrace.sock = socket(AF_INET, SOCK_DGRAM, 0);
-	if (_gtrace.sock == INVALID_SOCK)
-		return -1;
+	//
+	// stdout
+	//
+	_gtrace.so.enabled = false;
+	if (so == true) {
+		_gtrace.so.enabled = true;
+	}
 
-	_gtrace.addr.sin_family = AF_INET;
-	_gtrace.addr.sin_port = htons(_gtrace.conf.port);
-	_gtrace.addr.sin_addr.s_addr = inet_addr(_gtrace.conf.ip);
-	memset(&_gtrace.addr.sin_zero, 0, sizeof(_gtrace.addr.sin_zero));
+	//
+	// file
+	//
+	_gtrace.file.enabled = false;
+	if (file != NULL) {
+		_gtrace.file.fp = fopen(file, "a");
+		if (_gtrace.file.fp == NULL) {
+			fprintf(stderr, "fopen(%s) return nullptr\n", file);
+		} else {
+			_gtrace.file.enabled = true;
+		}
+	}
 
-	_gtrace.active = true;
+	_gtrace.status.active = true;
 	return true;
 }
 
@@ -135,9 +185,9 @@ const char* gtrace_file_name(const char* file_name) {
 	const char* p2 = strrchr(file_name, '/');
 	const char* p	= p1 > p2 ? p1 : p2;
 #endif // WIN32
-#ifdef linux
+#ifdef __linux__
 	const char* p = strrchr(file_name, '/');
-#endif // linux
+#endif // __linux__
 	return (p == NULL ? file_name : p + 1);
 }
 
@@ -146,7 +196,7 @@ const char* gtrace_func_name(const char* func_name) {
 	const char* p = strrchr(func_name, ':');
 	return (p == NULL ? func_name : p + 1);
 #endif // WIN32
-#ifdef linux
+#ifdef __linux__
 	return func_name;
-#endif // linux
+#endif // __linux__
 }
