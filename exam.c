@@ -10,6 +10,7 @@ void udp_test() {
 	gtrace_open("127.0.0.1", 8908, false, 0);
 	GTRACE("hello world(udp)");
 }
+
 void stdout_test() {
 	gtrace_close();
 	gtrace_open(0, 0, true, 0);

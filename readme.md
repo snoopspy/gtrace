@@ -34,6 +34,7 @@ void udp_test() {
 	gtrace_open("127.0.0.1", 8908, false, 0);
 	GTRACE("hello world(udp)");
 }
+
 void stdout_test() {
 	gtrace_close();
 	gtrace_open(0, 0, true, 0);
@@ -59,18 +60,18 @@ int main() {
 ## stdout
 ```
 $ ./exam
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 0
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 1
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 2
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 3
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 4
-7F2341BC5540 [exam.c:16] stdout_test hello world(stdout)
+7F23E7D41540 [exam.c:5] simple_test hello world(simple) 0
+7F23E7D41540 [exam.c:5] simple_test hello world(simple) 1
+7F23E7D41540 [exam.c:5] simple_test hello world(simple) 2
+7F23E7D41540 [exam.c:5] simple_test hello world(simple) 3
+7F23E7D41540 [exam.c:5] simple_test hello world(simple) 4
+7F23E7D41540 [exam.c:17] stdout_test hello world(stdout)
 ```
 
 ## file(test.log)
 ```
 $ tail -f test.log
-7F2341BC5540 [exam.c:22] file_test hello world(file)
+7F23E7D41540 [exam.c:23] file_test hello world(file)
 ```
 
 ## udp server
