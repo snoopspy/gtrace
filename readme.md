@@ -1,51 +1,87 @@
-gtrace version 0.2
+gtrace version 0.4
 ==================
 
 # How to use
 
 * Include **gtrace.h** and add **gtrace.c** in your project.
 * Call **gtrace**(function) or **GTRACE**(macro).
-* If you would like to change option, call **gtrace_open** function.
+* If you would like to change option, call **gtrace_close** and **gtrace_open** function.
+
+
+# Options
+```
+bool gtrace_open(const char* ip, int port, bool so /*stdout*/ , const char* file);
+```
+
+|options|description|
+|---|---|
+|ip, port|udp sending options. if ip is nullptr(0) or port is 0, udp sending is disabled.|
+|so|stdout write option.|
+|file|file writing option. if file is nullptr(0), file writing is disabled.|
 
 # Example
 
 ```cpp
 #include "gtrace.h"
 
-void gtrace_test() {
-	gtrace("hello world 1");
+void simple_test() {
+	for (int i = 0; i < 5; i++)
+		GTRACE("hello world(simple) %d\n", i);
 }
 
-void gtrace_conf_test() {
-	gtrace_open("127.0.0.1", 8908, true);
-	gtrace("hello world 2");
+void udp_test() {
 	gtrace_close();
+	gtrace_open("127.0.0.1", 8908, false, 0);
+	GTRACE("hello world(udp)");
 }
-
-void GTRACE_test() {
-	GTRACE("hello world 3");
-}
-
-void GTRACE_conf_test() {
-	gtrace_open("127.0.0.1", 8908, true);
-	GTRACE("hello world 4");
+void stdout_test() {
 	gtrace_close();
+	gtrace_open(0, 0, true, 0);
+	GTRACE("hello world(stdout)\n");
+}
+
+void file_test() {
+	gtrace_close();
+	gtrace_open(0, 0, false, "test.log");
+	GTRACE("hello world(file)\n");
 }
 
 int main() {
-	gtrace_test();
-	gtrace_conf_test();
-	GTRACE_test();
-	GTRACE_conf_test();
+	simple_test();
+	udp_test();
+	stdout_test();
+	file_test();
 }
 ```
 
 # Output
+
+## stdout
 ```
-7FF4B2F5C540 hello world 1
-7FF4B2F5C540 hello world 2
-7FF4B2F5C540 [exam.c:14] GTRACE_test hello world 3
-7FF4B2F5C540 [exam.c:19] GTRACE_conf_test hello world 4
+$ ./exam
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 0
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 1
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 2
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 3
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 4
+7F2341BC5540 [exam.c:16] stdout_test hello world(stdout)
+```
+
+## file(test.log)
+```
+$ tail -f test.log
+7F2341BC5540 [exam.c:22] file_test hello world(file)
+```
+
+## udp server
+```
+$ ./us 8908
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 0
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 1
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 2
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 3
+7F2341BC5540 [exam.c:5] simple_test hello world(simple) 4
+7F2341BC5540 [exam.c:11] udp_test hello world(udp)
 ```
 
 # For mingw
