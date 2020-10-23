@@ -89,5 +89,5 @@ $ ./us 8908
 
 * You can build example in the following make option.
 ```
-make CC=gcc LDFLAGS+=-lws2_32
+LDLIBS+=-lws2_32
 ```
