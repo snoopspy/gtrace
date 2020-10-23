@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS+=-g
-LDLIBS+=-lws2_32 # for windows
+#LDLIBS+=-lws2_32 # for windows
 
 all: exam
 

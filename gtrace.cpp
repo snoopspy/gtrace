@@ -19,7 +19,11 @@
 
 typedef struct {
 	struct {
+#ifdef __cplusplus
+		bool active{false};
+#else
 		bool active;
+#endif // __cplusplus
 	} status;
 
 	struct {
@@ -44,9 +48,13 @@ typedef struct {
 	} file;
 } gtrace_t;
 
+#ifdef __cplusplus
+gtrace_t _gtrace;
+#else
 gtrace_t _gtrace = {
 	.status.active = false
 };
+#endif
 
 // ----------------------------------------------------------------------------
 // api
