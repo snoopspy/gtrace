@@ -116,33 +116,8 @@ void gtrace(const char* fmt, ...) {
 	}
 }
 
-bool gtrace_close(void) {
-	if (!_gtrace.status.active)
-		return false;
-
-	if (_gtrace.udp.enabled) {
-		if (_gtrace.udp.sock != -1) {
-			close(_gtrace.udp.sock);
-			shutdown(_gtrace.udp.sock, 0x02); /* SD_BOTH */
-			_gtrace.udp.sock = -1;
-		}
-	}
-
-	if (_gtrace.so.enabled) {
-	}
-
-	if (_gtrace.file.enabled) {
-		if (_gtrace.file.fp != NULL) {
-			fclose(_gtrace.file.fp);
-			_gtrace.file.fp = NULL;
-		}
-	}
-
-	_gtrace.status.active = false;
-	return true;
-}
-
 bool gtrace_open(const char* ip, int port, bool so, const char* file) {
+	_gtrace.status.configured = true;
 	if (_gtrace.status.active)
 		return false;
 
@@ -194,6 +169,33 @@ bool gtrace_open(const char* ip, int port, bool so, const char* file) {
 	}
 
 	_gtrace.status.active = true;
+	return true;
+}
+
+bool gtrace_close(void) {
+	_gtrace.status.configured = true;
+	if (!_gtrace.status.active)
+		return false;
+
+	if (_gtrace.udp.enabled) {
+		if (_gtrace.udp.sock != -1) {
+			close(_gtrace.udp.sock);
+			shutdown(_gtrace.udp.sock, 0x02); /* SD_BOTH */
+			_gtrace.udp.sock = -1;
+		}
+	}
+
+	if (_gtrace.so.enabled) {
+	}
+
+	if (_gtrace.file.enabled) {
+		if (_gtrace.file.fp != NULL) {
+			fclose(_gtrace.file.fp);
+			_gtrace.file.fp = NULL;
+		}
+	}
+
+	_gtrace.status.active = false;
 	return true;
 }
 
