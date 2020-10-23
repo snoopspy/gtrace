@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 #ifdef WIN32
 #include <winsock2.h>
 #endif // WIN32
@@ -20,6 +21,7 @@
 typedef struct {
 	struct {
 #ifdef __cplusplus
+		bool configured{false};
 		bool active{false};
 #else
 		bool active;
@@ -52,6 +54,7 @@ typedef struct {
 gtrace_t _gtrace;
 #else
 gtrace_t _gtrace = {
+	.status.configured = false,
 	.status.active = false
 };
 #endif
@@ -60,9 +63,8 @@ gtrace_t _gtrace = {
 // api
 // ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) {
-	static bool first = true;
-	if (first && !_gtrace.status.active) {
-		first = false;
+	if (!_gtrace.status.configured) {
+		_gtrace.status.configured = true;
 		gtrace_open("127.0.0.1", 8908, true, NULL);
 	}
 
@@ -75,10 +77,20 @@ void gtrace(const char* fmt, ...) {
 	int len = 0;
 	int remn = BUFSIZ;
 
+	struct timeval now;
+	struct tm* local;
+	gettimeofday(&now, NULL);
+	local = localtime(&now.tv_sec);
+	res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
+	   (local->tm_year) % 100, local->tm_mon + 1, local->tm_mday,
+	   local->tm_hour, local->tm_min, local->tm_sec, now.tv_usec / 1000);
+	if (res < 0) return;
+	p += res; len += res; remn -= res;	
+
 #ifdef SHOW_THREAD_ID
-	res = snprintf(p, remn, "%08lX ", pthread_self());
-	if (res < 0)
-		return;
+	pthread_t id = pthread_self() & 0xFFFF;
+	res = snprintf(p, remn, "%04lX ", id);
+	if (res < 0) return;
 	p += res; len += res; remn -= res;
 #endif // SHOW_THREAD_ID
 

@@ -22,7 +22,7 @@ bool gtrace_open(const char* ip, int port, bool so /*stdout*/, const char* file)
 
 # Example
 
-```cpp
+```c
 #include "gtrace.h"
 
 void simple_test() {
@@ -61,29 +61,29 @@ int main() {
 ## stdout
 ```
 $ ./exam
-7F23E7D41540 [exam.c:5] simple_test hello world(simple) 0
-7F23E7D41540 [exam.c:5] simple_test hello world(simple) 1
-7F23E7D41540 [exam.c:5] simple_test hello world(simple) 2
-7F23E7D41540 [exam.c:5] simple_test hello world(simple) 3
-7F23E7D41540 [exam.c:5] simple_test hello world(simple) 4
-7F23E7D41540 [exam.c:17] stdout_test hello world(stdout)
+201023 211149-323 F540 [exam.c:5] simple_test hello world(simple) 0
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 1
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 2
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 3
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 4
+201023 211149-324 F540 [exam.c:17] stdout_test hello world(stdout)
 ```
 
 ## file(test.log)
 ```
 $ tail -f test.log
-7F23E7D41540 [exam.c:23] file_test hello world(file)
+201023 211149-324 F540 [exam.c:23] file_test hello world(file)
 ```
 
 ## udp server
 ```
 $ ./us 8908
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 0
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 1
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 2
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 3
-7F2341BC5540 [exam.c:5] simple_test hello world(simple) 4
-7F2341BC5540 [exam.c:11] udp_test hello world(udp)
+201023 211149-323 F540 [exam.c:5] simple_test hello world(simple) 0
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 1
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 2
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 3
+201023 211149-324 F540 [exam.c:5] simple_test hello world(simple) 4
+201023 211149-324 F540 [exam.c:11] udp_test hello world(udp)
 ```
 
 # For mingw
