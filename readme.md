@@ -3,7 +3,8 @@ gtrace version 0.4
 
 # How to use
 
-* Include **gtrace.h** and add **gtrace.c** in your project.
+* Include **gtrace.h** and add **gtrace.cpp** in your project.
+* You can also use **gtrace.c** by renaming **gtrace.cpp**.
 * Call **gtrace**(function) or **GTRACE**(macro).
 * If you would like to change option, call **gtrace_close** and **gtrace_open** function.
 
@@ -15,9 +16,9 @@ bool gtrace_open(const char* ip, int port, bool so /*stdout*/, const char* file)
 
 |options|description|
 |---|---|
-|ip, port|udp sending options. if ip is nullptr(0) or port is 0, udp sending is disabled.|
-|so|stdout write option.|
-|file|file writing option. if file is nullptr(0), file writing is disabled.|
+|ip, port|udp sending options. if ip is nullptr(0) or port is 0, udp sending is disabled. default "127.0.0.1" 8908|
+|so|stdout write option. default true|
+|file|file writing option. if file is nullptr(0), file writing is disabled. default nullptr(0)|
 
 # Example
 
