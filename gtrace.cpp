@@ -24,6 +24,7 @@ typedef struct {
 		bool configured{false};
 		bool active{false};
 #else
+		bool configured;
 		bool active;
 #endif // __cplusplus
 	} status;
