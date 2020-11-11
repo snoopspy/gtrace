@@ -66,7 +66,25 @@ gtrace_t _gtrace = {
 void gtrace(const char* fmt, ...) {
 	if (!_gtrace.status.configured) {
 		_gtrace.status.configured = true;
-		gtrace_open("127.0.0.1", 8908, true, NULL);
+		bool file_load = false;
+		FILE* fp = fopen("gtrace.conf", "r");
+		if (fp != NULL) {
+			char ip[BUFSIZ];
+			int port;
+			int so;
+			char file[BUFSIZ];
+			int res = fscanf(fp, "%s %d %d %s", ip, &port, &so, file);
+			if (res >=2 && res <= 4) {
+				switch (res) {
+					case 2: gtrace_open(ip, port, false, NULL); break;
+					case 3: gtrace_open(ip, port, (bool)so, NULL); break;
+					case 4: gtrace_open(ip, port, (bool)so, file); break;
+				}
+				file_load = true;
+			}
+		}
+		if (!file_load)
+			gtrace_open("127.0.0.1", 8908, true, NULL);
 	}
 
 	if (!_gtrace.status.active)
