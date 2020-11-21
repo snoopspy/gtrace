@@ -1,4 +1,4 @@
-gtrace version 0.5
+gtrace version 0.6
 ===
 
 # How to use
