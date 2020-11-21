@@ -36,11 +36,11 @@ typedef struct {
 	} udp;
 
 	//
-	// stdout
+	// stderr
 	//
 	struct {
 		bool enabled;
-	} so;
+	} se;
 
 	//
 	// file
@@ -71,20 +71,20 @@ void gtrace(const char* fmt, ...) {
 		if (fp != NULL) {
 			char ip[BUFSIZ];
 			int port;
-			int so;
+			int se;
 			char file[BUFSIZ];
-			int res = fscanf(fp, "%s %d %d %s", ip, &port, &so, file);
+			int res = fscanf(fp, "%s %d %d %s", ip, &port, &se, file);
 			if (res >=2 && res <= 4) {
 				switch (res) {
 					case 2: gtrace_open(ip, port, false, NULL); break;
-					case 3: gtrace_open(ip, port, (bool)so, NULL); break;
-					case 4: gtrace_open(ip, port, (bool)so, file); break;
+					case 3: gtrace_open(ip, port, (bool)se, NULL); break;
+					case 4: gtrace_open(ip, port, (bool)se, file); break;
 				}
 				file_load = true;
 			}
 		}
 		if (!file_load)
-			gtrace_open("127.0.0.1", 8908, true, NULL);
+			gtrace_open(NULL, 0, true, NULL);
 	}
 
 	if (!_gtrace.status.active)
@@ -123,9 +123,8 @@ void gtrace(const char* fmt, ...) {
 	if (_gtrace.udp.enabled)
 		sendto(_gtrace.udp.sock, buf, len, 0, (struct sockaddr*)&_gtrace.udp.addr, sizeof(struct sockaddr_in));
 
-	if (_gtrace.so.enabled) {
-		printf("%s", buf);
-		fflush(stdout);
+	if (_gtrace.se.enabled) {
+		fprintf(stderr, "%s", buf);
 	}
 
 	if (_gtrace.file.enabled) {
@@ -134,7 +133,7 @@ void gtrace(const char* fmt, ...) {
 	}
 }
 
-bool gtrace_open(const char* ip, int port, bool so, const char* file) {
+bool gtrace_open(const char* ip, int port, bool se, const char* file) {
 	_gtrace.status.configured = true;
 	if (_gtrace.status.active)
 		return false;
@@ -166,11 +165,11 @@ bool gtrace_open(const char* ip, int port, bool so, const char* file) {
 	}
 
 	//
-	// stdout
+	// stderr
 	//
-	_gtrace.so.enabled = false;
-	if (so == true) {
-		_gtrace.so.enabled = true;
+	_gtrace.se.enabled = false;
+	if (se == true) {
+		_gtrace.se.enabled = true;
 	}
 
 	//
@@ -203,7 +202,7 @@ bool gtrace_close(void) {
 		}
 	}
 
-	if (_gtrace.so.enabled) {
+	if (_gtrace.se.enabled) {
 	}
 
 	if (_gtrace.file.enabled) {

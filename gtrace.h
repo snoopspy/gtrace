@@ -21,7 +21,7 @@ extern "C" {
 // api
 // ----------------------------------------------------------------------------
 void gtrace(const char* fmt, ...) __attribute__ ((format (printf, 1, 2)));
-bool gtrace_open(const char* ip, int port, bool so /*stdout*/, const char* file);
+bool gtrace_open(const char* ip, int port, bool se /*stderr*/, const char* file);
 bool gtrace_close();
 
 // ----------------------------------------------------------------------------

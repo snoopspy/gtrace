@@ -11,13 +11,13 @@ gtrace version 0.5
 
 # Options
 ```
-bool gtrace_open(const char* ip, int port, bool so /*stdout*/, const char* file);
+bool gtrace_open(const char* ip, int port, bool se /*stderr*/, const char* file);
 ```
 
 |options|description|
 |---|---|
 |ip, port|udp sending options. if ip is nullptr(0) or port is 0, udp sending is disabled. default "127.0.0.1" 8908|
-|so|stdout write option. default true|
+|se|stderr write option. default true|
 |file|file writing option. if file is nullptr(0), file writing is disabled. default nullptr(0)|
 
 # Example
