@@ -84,7 +84,7 @@ void gtrace(const char* fmt, ...) {
 			}
 		}
 		if (!file_load)
-			gtrace_open(NULL, 0, true, NULL);
+			gtrace_open("127.0.0.1", 8908, true, NULL);
 	}
 
 	if (!_gtrace.status.active)
