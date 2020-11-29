@@ -60,6 +60,7 @@ gtrace_t _gtrace = {
 };
 #endif
 
+#define BUF_SIZE 8192
 // ----------------------------------------------------------------------------
 // api
 // ----------------------------------------------------------------------------
@@ -69,10 +70,10 @@ void gtrace(const char* fmt, ...) {
 		bool file_load = false;
 		FILE* fp = fopen("gtrace.conf", "r");
 		if (fp != NULL) {
-			char ip[BUFSIZ];
+			char ip[BUF_SIZE];
 			int port;
 			int se;
-			char file[BUFSIZ];
+			char file[BUF_SIZE];
 			int res = fscanf(fp, "%s %d %d %s", ip, &port, &se, file);
 			if (res >=2 && res <= 4) {
 				switch (res) {
@@ -91,10 +92,11 @@ void gtrace(const char* fmt, ...) {
 		return;
 
 	int res;
-	char buf[BUFSIZ];
+	char buf[BUF_SIZE + 1];// gilgil temp
 	char* p = buf;
 	int len = 0;
-	int remn = BUFSIZ;
+	ssize_t remn = BUF_SIZE;
+	memset(buf, 'a', BUF_SIZE + 1); // gilgil temp
 
 	struct timeval now;
 	struct tm* local;
@@ -103,22 +105,51 @@ void gtrace(const char* fmt, ...) {
 	res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
 		(local->tm_year) % 100, local->tm_mon + 1, local->tm_mday,
 		 local->tm_hour, local->tm_min, local->tm_sec, now.tv_usec / 1000);
-	if (res < 0) return;
+	if (res < 0) {
+		fprintf(stderr, "time: snprintf return %d\n", res);
+		return;
+	}
 	p += res; len += res; remn -= res;	
+	if (remn <= 0) {
+		fprintf(stderr, "time: not enough buffer size res=%d len=%d\n", res, len);
+		return;
+	}
 
 #ifdef SHOW_THREAD_ID
 	pthread_t id = pthread_self() & 0xFFFF;
 	res = snprintf(p, remn, "%04lX ", id);
-	if (res < 0) return;
+	if (res < 0) {
+		fprintf(stderr, "thread: snprintf return %d\n", res);
+		return;
+	}
 	p += res; len += res; remn -= res;
+	if (remn <= 0) {
+		fprintf(stderr, "thread: not enough buffer size res=%d len=%d\n", res, len);
+		return;
+	}
 #endif // SHOW_THREAD_ID
 
 	va_list args;
 	va_start(args, fmt);
 	res = vsnprintf(p, remn, fmt, args);
 	va_end(args);
-	if (res < 0) return;
-	p += res; len += res; // remn -= res;
+	if (res < 0) {
+		fprintf(stderr, "vsnprintf: snprintf return %d\n", res);
+		return;
+	}
+	p += res; len += res; remn -= res;
+	if (remn <= 0) {
+		fprintf(stderr, "vsprintf: not enough buffer size res=%d len=%d\n", res, len);
+		return;
+	}
+
+	memcpy(p, "\n\0", 2);
+	res = 0;
+	p += res; len += res; remn -= res;
+	if (remn <= 0) {
+		fprintf(stderr, "linefeed: not enough buffer size res=%d len=%d\n", res, len);
+		return;
+	}
 
 	if (_gtrace.udp.enabled)
 		sendto(_gtrace.udp.sock, buf, len, 0, (struct sockaddr*)&_gtrace.udp.addr, sizeof(struct sockaddr_in));
