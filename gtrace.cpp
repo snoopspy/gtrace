@@ -185,7 +185,7 @@ bool gtrace_open(const char* ip, int port, bool se, const char* file) {
 	if (ip != NULL && port != 0) {
 		_gtrace.udp.sock = socket(AF_INET, SOCK_DGRAM, 0);
 		if (_gtrace.udp.sock == -1) {
-			fprintf(stderr, "socket return nullptr\n");
+			fprintf(stderr, "socket return null\n");
 		} else {
 			_gtrace.udp.addr.sin_family = AF_INET;
 			_gtrace.udp.addr.sin_port = htons(port);
@@ -210,7 +210,7 @@ bool gtrace_open(const char* ip, int port, bool se, const char* file) {
 	if (file != NULL) {
 		_gtrace.file.fp = fopen(file, "a");
 		if (_gtrace.file.fp == NULL) {
-			fprintf(stderr, "fopen(%s) return nullptr\n", file);
+			fprintf(stderr, "fopen(%s) return null\n", file);
 		} else {
 			_gtrace.file.enabled = true;
 		}
