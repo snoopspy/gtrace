@@ -144,7 +144,7 @@ void gtrace(const char* fmt, ...) {
 	}
 
 	memcpy(p, "\n\0", 2);
-	res = 0;
+	res = 2;
 	p += res; len += res; remn -= res;
 	if (remn <= 0) {
 		fprintf(stderr, "linefeed: not enough buffer size res=%d len=%d\n", res, len);
@@ -152,7 +152,7 @@ void gtrace(const char* fmt, ...) {
 	}
 
 	if (_gtrace.udp.enabled)
-		sendto(_gtrace.udp.sock, buf, len, 0, (struct sockaddr*)&_gtrace.udp.addr, sizeof(struct sockaddr_in));
+		sendto(_gtrace.udp.sock, buf, len - 1, 0, (struct sockaddr*)&_gtrace.udp.addr, sizeof(struct sockaddr_in));
 
 	if (_gtrace.se.enabled) {
 		fprintf(stderr, "%s", buf);
