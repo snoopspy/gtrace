@@ -11,10 +11,10 @@ void udp_test() {
 	GTRACE("hello world(udp)");
 }
 
-void stdout_test() {
+void stderr_test() {
 	gtrace_close();
 	gtrace_open(0, 0, true, 0);
-	GTRACE("hello world(stdout)");
+	GTRACE("hello world(stderr)");
 }
 
 void file_test() {
@@ -24,8 +24,9 @@ void file_test() {
 }
 
 int main() {
+	gtrace_default("127.0.0.1", 8908, true, 0);
 	simple_test();
 	udp_test();
-	stdout_test();
+	stderr_test();
 	file_test();
 }

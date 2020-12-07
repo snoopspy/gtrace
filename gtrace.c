@@ -18,6 +18,8 @@
 
 #include "gtrace.h"
 
+#define BUFSIZE 8192
+
 typedef struct {
 	struct {
 #ifdef __cplusplus
@@ -49,6 +51,23 @@ typedef struct {
 		bool enabled;
 		FILE* fp;
 	} file;
+
+	//
+	// def(ault)
+	//
+	struct {
+#ifdef __cplusplus
+		char ip[BUFSIZE]{"127.0.0.1"};
+		int port{8908};
+		bool se{true};
+		char file[BUFSIZE]{""};
+#else
+		char ip[BUFSIZE];
+		int port;
+		bool se;
+		char file[BUFSIZE];
+#endif // __cplusplus
+	} def;
 } gtrace_t;
 
 #ifdef __cplusplus
@@ -56,11 +75,22 @@ gtrace_t _gtrace;
 #else
 gtrace_t _gtrace = {
 	.status.configured = false,
-	.status.active = false
+	.status.active = false,
+	.def.ip[0] = '1',
+	.def.ip[1] = '2',
+	.def.ip[2] = '7',
+	.def.ip[3] = '.',
+	.def.ip[4] = '0',
+	.def.ip[5] = '.',
+	.def.ip[6] = '0',
+	.def.ip[7] = '.',
+	.def.ip[8] = '1',
+	.def.ip[9] = '\0',
+	.def.port = 8908,
+	.def.se = true
 };
 #endif
 
-#define BUF_SIZE 8192
 // ----------------------------------------------------------------------------
 // api
 // ----------------------------------------------------------------------------
@@ -70,10 +100,10 @@ void gtrace(const char* fmt, ...) {
 		bool file_load = false;
 		FILE* fp = fopen("gtrace.conf", "r");
 		if (fp != NULL) {
-			char ip[BUF_SIZE];
+			char ip[BUFSIZE];
 			int port;
 			int se;
-			char file[BUF_SIZE];
+			char file[BUFSIZE];
 			int res = fscanf(fp, "%s %d %d %s", ip, &port, &se, file);
 			if (res >=2 && res <= 4) {
 				switch (res) {
@@ -82,21 +112,21 @@ void gtrace(const char* fmt, ...) {
 					case 4: gtrace_open(ip, port, (bool)se, file); break;
 				}
 				file_load = true;
+				fclose(fp);
 			}
 		}
 		if (!file_load)
-			gtrace_open("127.0.0.1", 8908, true, NULL);
+			gtrace_open(_gtrace.def.ip, _gtrace.def.port, _gtrace.def.se, _gtrace.def.file);
 	}
 
 	if (!_gtrace.status.active)
 		return;
 
 	int res;
-	char buf[BUF_SIZE + 1];// gilgil temp
+	char buf[BUFSIZE + 1];
 	char* p = buf;
 	int len = 0;
-	ssize_t remn = BUF_SIZE;
-	memset(buf, 'a', BUF_SIZE + 1); // gilgil temp
+	ssize_t remn = BUFSIZE;
 
 	struct timeval now;
 	struct tm* local;
@@ -164,6 +194,21 @@ void gtrace(const char* fmt, ...) {
 	}
 }
 
+void gtrace_default(const char* ip, int port, bool se /*stderr*/, const char* file) {
+	if (ip != NULL && strlen(ip) > 0 && port != 0) {
+		strncpy(_gtrace.def.ip, ip, BUFSIZE);
+		_gtrace.def.port = port;
+	} else {
+		memset(_gtrace.def.ip, 0, BUFSIZE);
+		_gtrace.def.port = 0;
+	}
+	_gtrace.def.se = se;
+	if (file != NULL && strlen(file) > 0)
+		strncpy(_gtrace.def.file, file, BUFSIZE);
+	else
+		memset(_gtrace.def.file, 0, BUFSIZE);
+}
+
 bool gtrace_open(const char* ip, int port, bool se, const char* file) {
 	_gtrace.status.configured = true;
 	if (_gtrace.status.active)
@@ -182,7 +227,7 @@ bool gtrace_open(const char* ip, int port, bool se, const char* file) {
 	// udp
 	//
 	_gtrace.udp.enabled = false;
-	if (ip != NULL && port != 0) {
+	if (ip != NULL && strlen(ip) > 0 && port != 0) {
 		_gtrace.udp.sock = socket(AF_INET, SOCK_DGRAM, 0);
 		if (_gtrace.udp.sock == -1) {
 			fprintf(stderr, "socket return null\n");
@@ -207,7 +252,7 @@ bool gtrace_open(const char* ip, int port, bool se, const char* file) {
 	// file
 	//
 	_gtrace.file.enabled = false;
-	if (file != NULL) {
+	if (file != NULL && strlen(file) > 0) {
 		_gtrace.file.fp = fopen(file, "a");
 		if (_gtrace.file.fp == NULL) {
 			fprintf(stderr, "fopen(%s) return null\n", file);

@@ -7,4 +7,4 @@ exam: exam.o gtrace.o
 	$(LINK.cpp) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 clean:
-	rm -rf *.o exam exam.exe
+	rm -f *.o exam exam.exe
