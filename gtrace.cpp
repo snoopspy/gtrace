@@ -87,7 +87,8 @@ gtrace_t _gtrace = {
 	.def.ip[8] = '1',
 	.def.ip[9] = '\0',
 	.def.port = 8908,
-	.def.se = true
+	.def.se = true,
+	.def.file[0] = '\0'
 };
 #endif
 

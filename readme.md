@@ -1,4 +1,4 @@
-gtrace
+GTRACE
 ===
 
 # How to use
@@ -7,7 +7,7 @@ gtrace
 * You can also use **gtrace.c** by renaming **gtrace.cpp**.
 * Call **gtrace**(function) or **GTRACE**(macro).
 * If you would like to change option, call **gtrace_default** or **gtrace_open** function.
-
+* You can download us(udp server) in [https://gitlab.com/gilgil/scs.git](https://gitlab.com/gilgil/scs.git).
 
 # Options
 ```
@@ -55,10 +55,20 @@ int main() {
 	stderr_test();
 	file_test();
 }
-
 ```
 
 # Output
+
+## udp server
+```
+$ us 8908
+201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 0
+201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 1
+201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 2
+201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 3
+201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 4
+201208 010941-348 D540 [exam.c:11] udp_test hello world(udp)
+```
 
 ## stderr
 ```
@@ -75,17 +85,6 @@ $ ./exam
 ```
 $ tail -f test.log
 201208 010941-348 D540 [exam.c:23] file_test hello world(file)
-```
-
-## udp server
-```
-$ us 8908
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 0
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 1
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 2
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 3
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 4
-201208 010941-348 D540 [exam.c:11] udp_test hello world(udp)
 ```
 
 # For mingw
