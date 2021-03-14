@@ -129,6 +129,14 @@ void gtrace(const char* fmt, ...) {
 	int len = 0;
 	ssize_t remn = BUFSIZE;
 
+#ifdef WIN32
+    SYSTEMTIME now;
+    ::GetLocalTime(&now);
+    res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
+        now.wYear % 100, now.wMonth, now.wDay,
+        now.wHour, now.wMinute, now.wSecond, now.wMilliseconds);
+#endif // WIN32
+#ifdef __linux__
 	struct timeval now;
 	struct tm* local;
 	gettimeofday(&now, NULL);
@@ -136,10 +144,12 @@ void gtrace(const char* fmt, ...) {
 	res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
 		(local->tm_year) % 100, local->tm_mon + 1, local->tm_mday,
 		 local->tm_hour, local->tm_min, local->tm_sec, now.tv_usec / 1000);
-	if (res < 0) {
+#endif // __linux__
+    if (res < 0) {
 		fprintf(stderr, "time: snprintf return %d\n", res);
 		return;
 	}
+
 	p += res; len += res; remn -= res;	
 	if (remn <= 0) {
 		fprintf(stderr, "time: not enough buffer size res=%d len=%d\n", res, len);
