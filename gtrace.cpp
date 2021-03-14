@@ -132,7 +132,7 @@ void gtrace(const char* fmt, ...) {
 #ifdef WIN32
     SYSTEMTIME now;
     ::GetLocalTime(&now);
-    res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
+    res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03d ",
         now.wYear % 100, now.wMonth, now.wDay,
         now.wHour, now.wMinute, now.wSecond, now.wMilliseconds);
 #endif // WIN32
@@ -157,8 +157,8 @@ void gtrace(const char* fmt, ...) {
 	}
 
 #ifdef SHOW_THREAD_ID
-	pthread_t id = pthread_self() & 0xFFFF;
-	res = snprintf(p, remn, "%04lX ", id);
+    unsigned id = unsigned(pthread_self() & 0xFFFF);
+    res = snprintf(p, remn, "%04X ", id);
 	if (res < 0) {
 		fprintf(stderr, "thread: snprintf return %d\n", res);
 		return;

@@ -1,4 +1,5 @@
 CPPFLAGS+=-g
+CPPFLAGS+=-Wall
 #LDLIBS+=-lws2_32 # for windows
 
 all: exam
