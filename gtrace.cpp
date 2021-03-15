@@ -130,11 +130,11 @@ void gtrace(const char* fmt, ...) {
 	ssize_t remn = BUFSIZE;
 
 #ifdef WIN32
-    SYSTEMTIME now;
-    ::GetLocalTime(&now);
-    res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03d ",
-        now.wYear % 100, now.wMonth, now.wDay,
-        now.wHour, now.wMinute, now.wSecond, now.wMilliseconds);
+	SYSTEMTIME now;
+	::GetLocalTime(&now);
+	res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03d ",
+		now.wYear % 100, now.wMonth, now.wDay,
+		now.wHour, now.wMinute, now.wSecond, now.wMilliseconds);
 #endif // WIN32
 #ifdef __linux__
 	struct timeval now;
@@ -143,22 +143,22 @@ void gtrace(const char* fmt, ...) {
 	local = localtime(&now.tv_sec);
 	res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
 		(local->tm_year) % 100, local->tm_mon + 1, local->tm_mday,
-		 local->tm_hour, local->tm_min, local->tm_sec, now.tv_usec / 1000);
+		local->tm_hour, local->tm_min, local->tm_sec, now.tv_usec / 1000);
 #endif // __linux__
-    if (res < 0) {
+	if (res < 0) {
 		fprintf(stderr, "time: snprintf return %d\n", res);
 		return;
 	}
 
-	p += res; len += res; remn -= res;	
+	p += res; len += res; remn -= res;
 	if (remn <= 0) {
 		fprintf(stderr, "time: not enough buffer size res=%d len=%d\n", res, len);
 		return;
 	}
 
 #ifdef SHOW_THREAD_ID
-    unsigned id = unsigned(pthread_self() & 0xFFFF);
-    res = snprintf(p, remn, "%04X ", id);
+	unsigned id = unsigned(pthread_self() & 0xFFFF);
+	res = snprintf(p, remn, "%04X ", id);
 	if (res < 0) {
 		fprintf(stderr, "thread: snprintf return %d\n", res);
 		return;
@@ -186,7 +186,7 @@ void gtrace(const char* fmt, ...) {
 
 	memcpy(p, "\n\0", 2);
 	res = 2;
-	p += res; len += res; remn -= res;
+	/*p += res;*/ len += res; remn -= res;
 	if (remn <= 0) {
 		fprintf(stderr, "linefeed: not enough buffer size res=%d len=%d\n", res, len);
 		return;
