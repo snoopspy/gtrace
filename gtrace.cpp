@@ -157,7 +157,7 @@ void gtrace(const char* fmt, ...) {
 	}
 
 #ifdef SHOW_THREAD_ID
-	unsigned id = unsigned(pthread_self() & 0xFFFF);
+	unsigned id = (unsigned)(pthread_self() & 0xFFFF);
 	res = snprintf(p, remn, "%04X ", id);
 	if (res < 0) {
 		fprintf(stderr, "thread: snprintf return %d\n", res);
@@ -207,7 +207,7 @@ void gtrace(const char* fmt, ...) {
 
 void gtrace_default(const char* ip, int port, bool se /*stderr*/, const char* file) {
 	if (ip != NULL && strlen(ip) > 0 && port != 0) {
-		strncpy(_gtrace.def.ip, ip, BUFSIZE);
+		strncpy(_gtrace.def.ip, ip, BUFSIZE - 1);
 		_gtrace.def.port = port;
 	} else {
 		memset(_gtrace.def.ip, 0, BUFSIZE);
@@ -215,7 +215,7 @@ void gtrace_default(const char* ip, int port, bool se /*stderr*/, const char* fi
 	}
 	_gtrace.def.se = se;
 	if (file != NULL && strlen(file) > 0)
-		strncpy(_gtrace.def.file, file, BUFSIZE);
+		strncpy(_gtrace.def.file, file, BUFSIZE - 1);
 	else
 		memset(_gtrace.def.file, 0, BUFSIZE);
 }
