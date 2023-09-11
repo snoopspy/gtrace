@@ -20,7 +20,7 @@
 
 #define BUFSIZE 8192
 
-typedef struct {
+struct {
 	struct {
 #ifdef __cplusplus
 		bool configured{false};
@@ -68,12 +68,10 @@ typedef struct {
 		char file[BUFSIZE];
 #endif // __cplusplus
 	} def;
-} gtrace_t;
-
 #ifdef __cplusplus
-gtrace_t _gtrace;
+} _gtrace;
 #else
-gtrace_t _gtrace = {
+} _gtrace = {
 	.status.configured = false,
 	.status.active = false,
 	.def.ip[0] = '1',
