@@ -22,6 +22,10 @@ bool gtrace_default(const char* ip, int port, bool se /*stderr*/, const char* fi
 
 * You can also change gtrace option by putting "gtrace.conf" file in executable directory as follows.
 
+```
+127.0.0.1 8908 1 test.log
+```
+
 # Example
 
 ```c
