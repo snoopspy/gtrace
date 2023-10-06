@@ -139,7 +139,7 @@ void gtrace(const char* fmt, ...) {
 	struct tm* local;
 	gettimeofday(&now, NULL);
 	local = localtime(&now.tv_sec);
-	res = snprintf(p, remn, "%02d%02d%02d %02d%02d%02d-%03lu ",
+	res = snprintf(p, remn, "%02d%02d%02d %02d:%02d:%02d.%03lu ",
 		(local->tm_year) % 100, local->tm_mon + 1, local->tm_mday,
 		local->tm_hour, local->tm_min, local->tm_sec, now.tv_usec / 1000);
 #endif // __linux__
