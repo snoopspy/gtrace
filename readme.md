@@ -20,6 +20,8 @@ bool gtrace_default(const char* ip, int port, bool se /*stderr*/, const char* fi
 |se|stderr write option. default true|
 |file|file writing option. if file is nullptr(0), file writing is disabled. default nullptr(0)|
 
+* You can also change gtrace option by putting "gtrace.conf" file in executable directory as follows.
+
 # Example
 
 ```c
@@ -62,29 +64,29 @@ int main() {
 ## udp server
 ```
 $ us 8908
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 0
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 1
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 2
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 3
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 4
-201208 010941-348 D540 [exam.c:11] udp_test hello world(udp)
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 0
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 1
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 2
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 3
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 4
+231006 14:58:45.136 B740 [exam.cpp:11] udp_test hello world(udp)
 ```
 
 ## stderr
 ```
-$ ./exam
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 0
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 1
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 2
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 3
-201208 010941-348 D540 [exam.c:5] simple_test hello world(simple) 4
-201208 010941-348 D540 [exam.c:17] stderr_test hello world(stderr)
+$ ./exam            
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 0
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 1
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 2
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 3
+231006 14:58:45.136 B740 [exam.cpp:5] simple_test hello world(simple) 4
+231006 14:58:45.136 B740 [exam.cpp:17] stderr_test hello world(stderr)
 ```
 
 ## file(test.log)
 ```
 $ tail -f test.log
-201208 010941-348 D540 [exam.c:23] file_test hello world(file)
+231006 14:58:45.136 B740 [exam.cpp:23] file_test hello world(file)
 ```
 
 # For mingw
